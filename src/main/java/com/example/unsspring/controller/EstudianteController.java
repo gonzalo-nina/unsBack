@@ -40,6 +40,25 @@ public class EstudianteController {
         return estudianteService.createEstudiante(estudiante);
     }
 
+    //Actualizar estudiante
+    @PutMapping("/{id}")
+    public ResponseEntity<Estudiante> updateEstudiante(@PathVariable Integer id, @RequestBody Estudiante estudiante){
+        Estudiante estudianteActual = estudianteService.updateEstudiante(id, estudiante);
+        if (estudianteActual != null){
+            return ResponseEntity.ok(estudianteActual);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    //eliminar estudiante
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEstudiante(@PathVariable Integer id){
+        estudianteService.deleteEstudiante(id);
+        return ResponseEntity.ok().build();
+    }
+
+    
+
 
 
 }
