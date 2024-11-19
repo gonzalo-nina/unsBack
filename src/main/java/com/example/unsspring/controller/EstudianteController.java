@@ -52,7 +52,7 @@ public class EstudianteController {
 
     //eliminar estudiante
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteEstudiante(@PathVariable Integer id){
         estudianteService.deleteEstudiante(id);
         return ResponseEntity.ok().build();
