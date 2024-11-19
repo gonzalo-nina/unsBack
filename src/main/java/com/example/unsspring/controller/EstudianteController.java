@@ -5,9 +5,9 @@ import com.example.unsspring.service.EstudianteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
 
 
 
@@ -52,6 +52,7 @@ public class EstudianteController {
 
     //eliminar estudiante
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteEstudiante(@PathVariable Integer id){
         estudianteService.deleteEstudiante(id);
         return ResponseEntity.ok().build();
