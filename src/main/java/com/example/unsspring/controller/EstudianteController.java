@@ -24,7 +24,7 @@ public class EstudianteController {
         return estudianteService.getEstudiantes();
     }
 
-    //obtener la lista de un estudiantes por su id
+    //obtener la lista de un estudiante por su id
     @GetMapping("/{id}")
     public ResponseEntity<Estudiante> getEstudianteById(@PathVariable Integer id){
         Estudiante estudiante = estudianteService.getEstudianteById(id);
