@@ -38,21 +38,25 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
+
         return customUserDetailsService;
     }
 
     @Bean
     public JwtRequestFilter jwtRequestFilter() {
+
         return new JwtRequestFilter(userDetailsService(), jwtUtil());
     }
 
     @Bean
     public JwtUtil jwtUtil() {
+
         return new JwtUtil();
     }
 
@@ -91,9 +95,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:8080", 
-            "http://localhost:5173", 
-            "http://localhost:3000"
+            "http://localhost:8080", //Entorno Local
+            "http://localhost:5173", //Entorno con React
+            "http://localhost:3000" //Otros
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
