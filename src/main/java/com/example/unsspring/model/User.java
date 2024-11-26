@@ -17,6 +17,18 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    //Columna Nombre
+    @Column(length = 50, nullable = false)
+    private String nombre;
+
+    //Columna Apellido
+    @Column(length = 50, nullable = false)
+    private String apellido;
+
+    //Columna email
+    @Column(length = 50, nullable = false)
+    private String email;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "users_roles",
@@ -55,6 +67,30 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     // Getters y Setters

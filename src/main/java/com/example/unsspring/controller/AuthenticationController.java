@@ -1,6 +1,8 @@
 // src/main/java/com/example/unsspring/controller/AuthenticationController.java
 package com.example.unsspring.controller;
 
+import com.example.unsspring.model.User;
+import com.example.unsspring.service.UserService;
 import com.example.unsspring.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,11 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class AuthenticationController {
@@ -24,35 +27,40 @@ public class AuthenticationController {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserService userService;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(
-            @RequestParam String username, 
-            @RequestParam String password) {
+    public ResponseEntity<?> authenticate(@RequestParam String username, @RequestParam String password) {
         try {
-            authenticationManager.authenticate(
+            Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
             );
-
-            final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(username);
             
-            final String jwt = jwtUtil.generateToken(
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String token = jwtUtil.generateToken(
                 userDetails.getUsername(),
                 userDetails.getAuthorities().iterator().next().getAuthority()
             );
-
-            return ResponseEntity.ok(new HashMap<String, String>() {{
-                put("token", jwt);
+            
+            User user = userService.findByUsername(username);
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("user", new HashMap<String, Object>() {{
+                put("id", user.getId());
+                put("username", user.getUsername());
+                put("nombre", user.getNombre());
+                put("apellido", user.getApellido());
+                put("email", user.getEmail());
+                put("role", user.getRoles().iterator().next().getName());
             }});
-
+            
+            return ResponseEntity.ok(response);
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("Invalid username or password");
+                .body("Credenciales inválidas");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Authentication error: " + e.getMessage());
+                .body("Error de autenticación: " + e.getMessage());
         }
     }
 }
